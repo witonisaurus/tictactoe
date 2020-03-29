@@ -18,23 +18,22 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 running = True
 xo = -1
-gameboard = [[0,0,0],[0,0,0],[0,0,0]]
-winner = 'asdf'
-isWinner = False
-oWins = 0
-xWins = 0
 boardFull = False
 
-def action(self, xo):
-		if xo < 0:
+def mark_board(self, xo):
+		if self.text is not "":
+			return False
+		elif xo < 0:
 			self.text = "X"
+			return True
 		else: 
 			self.text = "O"
+			return True
 
 gameboard = []
 for row in range(3):
 	for col in range(3):
-		gameboard.append(Button(action, (col*SCREEN_WIDTH//3,row*SCREEN_WIDTH//3), SCREEN_WIDTH//3, SCREEN_HEIGHT//3, color=(0,0,0), border_thickness=10))
+		gameboard.append(Button(mark_board, (col*SCREEN_WIDTH//3,row*SCREEN_WIDTH//3), SCREEN_WIDTH//3, SCREEN_HEIGHT//3, color=(0,0,0), border_thickness=10))
 
 
 while running:
@@ -48,18 +47,22 @@ while running:
 		elif event.type == QUIT:
 			running = False
 
-	screen.fill((70, 70, 90))
-
-
-	for event in pygame.event.get():
-		if event.type == pygame.MOUSEBUTTONDOWN:
+		elif event.type == pygame.MOUSEBUTTONDOWN:
 			for sqr in gameboard:
 				if sqr.isClicked(pygame.mouse.get_pos()):
-					sqr.action(sqr, xo)
-					print(sqr.text)
+					if sqr.action(sqr, xo):
+						xo *= -1
+
+	screen.fill((70, 70, 90))
+
 	for sqr in gameboard:
 		sqr.draw(screen)
 
 
 	pygame.display.flip()
+
+	for row in range(3):
+		for col in range(3):
+			print(gameboard[row*3 + col].text, end="\t")
+		print("")
 
